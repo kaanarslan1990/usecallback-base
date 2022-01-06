@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import "./App.css";
 
 const phones = [
@@ -11,9 +11,9 @@ const App = () => {
   const [products] = useState(phones);
   const [cart, setCart] = useState([]);
 
-  const addToCart = (product) => {
+  const addToCart = useCallback((product) => {
     setCart((cart) => [...cart, product]);
-  };
+  }, []);
 
   const emptyCart = () => {
     setCart([]);
@@ -27,10 +27,10 @@ const App = () => {
   );
 };
 
-const Products = ({ products, addToCart }) => {
+const Products = React.memo(({ products, addToCart }) => {
   return (
     <>
-      <h1>Ürünler</h1>
+      <h1>Products</h1>
       <div className="products">
         {products.map(({ name, price }) => (
           <Product key={name} name={name} price={price} addToCart={addToCart} />
@@ -38,13 +38,13 @@ const Products = ({ products, addToCart }) => {
       </div>
     </>
   );
-};
+});
 
 const Cart = ({ cart, emptyCart }) => {
   return (
     <>
       <h1>
-        Sepetiniz <button onClick={emptyCart}>sepeti boşalt</button>
+        Shopping Cart <button onClick={emptyCart}>Remove Products</button>
       </h1>
       <div className="products">
         {cart.map(({ name, price }, index) => (
@@ -55,16 +55,16 @@ const Cart = ({ cart, emptyCart }) => {
   );
 };
 
-const Product = ({ name, price, addToCart }) => {
+const Product = React.memo(({ name, price, addToCart }) => {
   return (
     <div className="product">
       <h2>{name}</h2>
       <h3>{price.toLocaleString()} ₺</h3>
       {addToCart && (
-        <button onClick={() => addToCart({ name, price })}>Sepete Ekle</button>
+        <button onClick={() => addToCart({ name, price })}>Add Cart</button>
       )}
     </div>
   );
-};
+});
 
 export default App;
